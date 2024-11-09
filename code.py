@@ -21,57 +21,48 @@ BORDER = 5
 display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=WIDTH, height=HEIGHT)
 
 #  Tile Setup
-bitmap, palette = adafruit_imageload.load("/sprite_sheet.bmp",
-                                          bitmap=displayio.Bitmap,
-                                          palette=displayio.Palette)
+font, palette = adafruit_imageload.load("Sprite Sheets/Sprite1.bmp",
+                                        bitmap=displayio.Bitmap,
+                                        palette=displayio.Palette)
 
-tile_grid = displayio.TileGrid(bitmap,
+font_tile = displayio.TileGrid(font,
                                pixel_shader=palette,
                                width=4,
                                height=2,
                                tile_width=32,
                                tile_height=32)
 
-#  life icon
-tile_grid[0] = 10
 
-#  commander and poison icon
-tile_grid[4] = 14
+#  Group setup
+group = displayio.Group(scale=1)
+group.append(font_tile)
 
-#  life tens display
+#  Tile setup
+grid_num0 = 10
+grid_num4 = 14
 grid_num1 = 4
-tile_grid[1] = grid_num1
-
-#  life ones display
 grid_num2 = 0
-tile_grid[2] = grid_num2
-
-#  commander and poison tens display
-grid_num5 = 4
-tile_grid[1] = grid_num5
-
-#  commander and poison ones display
+grid_num5 = 0
 grid_num6 = 0
-tile_grid[2] = grid_num6
-
-#  selection display
 grid_num3 = 12
-grid_num4 = 13
-tile_grid[3] = grid_num3
-tile_grid[7] = grid_num4
+grid_num7 = 13
+font_tile[0] = grid_num0  # life icon
+font_tile[4] = grid_num4  # commander and poison icon
+font_tile[1] = grid_num1  # life tens display
+font_tile[2] = grid_num2  # life ones display
+font_tile[5] = grid_num5  # commander and poison tens display
+font_tile[6] = grid_num6  # commander and poison ones display
+font_tile[3] = grid_num3  # selection display
+font_tile[7] = grid_num7  # selection display
+
+#  Display screen 
+display.root_group = group
+group.x = 0
+group.y = 0
 
 #  Initial Selection
 selection = 1
-
-#  I don't remember
-group = displayio.Group(scale=1)
-
-group.append(tile_grid)
-
-display.root_group = group
-
-group.x = 0
-group.y = 0
+font_selection = 1
 
 #  Button to pin assignments and debouncing
 switch1 = DigitalInOut(board.GP21)
@@ -99,34 +90,250 @@ switch6.switch_to_input(pull=digitalio.Pull.UP)
 deb_switch6 = Debouncer(switch6)
 
 #  Life total tracker
-lifetotalhun = 0
-lifetotalten = 4
-lifetotalone = 0
-lifetotalupdate = 0
+lifehun = 0
+lifeten = 4
+lifeone = 0
+life = lifehun, lifeten, lifeone
 
 #  Commander 1 tracker
-commander1hun = 0
-commander1ten = 0
-commander1one = 0
-commander1update = 0
+cmd1hun = 0
+cmd1ten = 0
+cmd1one = 0
+cmd1 = cmd1hun, cmd1ten, cmd1one
 
 #  Commander 2 tracker
-commander2hun = 0
-commander2ten = 0
-commander2one = 0
-commander2update = 0
+cmd2hun = 0
+cmd2ten = 0
+cmd2one = 0
+cmd2 = cmd2hun, cmd2ten, cmd2one
 
 #  Commander 3 tracker
-commander3hun = 0
-commander3ten = 0
-commander3one = 0
-commander3update = 0
+cmd3hun = 0
+cmd3ten = 0
+cmd3one = 0
+cmd3 = cmd3hun, cmd3ten, cmd3one
 
 #  Poison tracker
-poisontotalhun = 0
-poisontotalten = 0
-poisontotalone = 0
-poisontotalupdate = 0
+poisonhun = 0
+poisonten = 0
+poisonone = 0
+poison = poisonhun, poisonten, poisonone
+
+def update_life():
+    grid_num1 = lifeten
+    font_tile[1] = grid_num1
+    grid_num2 = lifeone
+    font_tile[2] = grid_num2
+    life = lifehun, lifeten, lifeone  # For debug printing
+    print("life", life)
+    
+def update_cmd1():
+    grid_num5 = cmd1ten
+    font_tile[5] = grid_num5
+    grid_num6 = cmd1one
+    font_tile[6] = grid_num6
+    cmd1 = cmd1hun, cmd1ten, cmd1one
+    print("cmd1", cmd1)
+
+def update_cmd2():
+    grid_num5 = cmd2ten
+    font_tile[5] = grid_num5
+    grid_num6 = cmd2one
+    font_tile[6] = grid_num6
+    cmd2 = cmd2hun, cmd2ten, cmd2one
+    print("cmd2", cmd2)
+
+def update_cmd3():
+    grid_num5 = cmd3ten
+    font_tile[5] = grid_num5
+    grid_num6 = cmd3one
+    font_tile[6] = grid_num6
+    cmd3 = cmd3hun, cmd3ten, cmd3one
+    print("cmd3", cmd3)
+
+def update_poison():
+    grid_num5 = poisonten
+    font_tile[5] = grid_num5
+    grid_num6 = poisonone
+    font_tile[6] = grid_num6
+    poison = poisonhun, poisonten, poisonone
+    print("poison", poison)
+
+def check_math_life():
+    global lifeone
+    global lifeten
+    global lifehun
+    if lifeone >= 10:
+        lifeone = lifeone - 10
+        lifeten = lifeten + 1
+
+    if lifeone <= -1:
+        lifeone = lifeone + 10
+        lifeten = lifeten - 1
+
+    if lifeten >= 10:
+        lifeten = lifeten - 10
+        lifehun = lifehun + 1
+
+    if lifeten <= -1:
+        lifeten = lifeten + 10
+        lifehun = lifehun - 1
+
+    #  Floor to stop from going negative
+    if lifehun <= -1:
+        lifehun = 0
+        lifeten = 0
+        lifeone = 0
+
+def check_math_cmd1():
+    global cmd1hun
+    global cmd1ten
+    global cmd1one
+    if cmd1one >= 10:
+        cmd1one = cmd1one - 10
+        cmd1ten = cmd1ten + 1
+
+    if cmd1one <= -1:
+        cmd1one = cmd1one + 10
+        cmd1ten = cmd1ten - 1
+
+    if cmd1ten >= 10:
+        cmd1ten = cmd1ten - 10
+        cmd1hun = cmd1hun + 1
+
+    if cmd1ten <= -1:
+        cmd1ten = cmd1ten + 10
+        cmd1hun = cmd1hun - 1
+
+    if cmd1hun <= -1:
+        cmd1hun = 0
+        cmd1ten = 0
+        cmd1one = 0
+
+def check_math_cmd2():
+    global cmd2one
+    global cmd2ten
+    global cmd2hun
+    if cmd2one >= 10:
+        cmd2one = cmd2one - 10
+        cmd2ten = cmd2ten + 1
+
+    if cmd2one <= -1:
+        cmd2one = cmd2one + 10
+        cmd2ten = cmd2ten - 1
+
+    if cmd2ten >= 10:
+        cmd2ten = cmd2ten - 10
+        cmd2hun = cmd2hun + 1
+
+    if cmd2ten <= -1:
+        cmd2ten = cmd2ten + 10
+        cmd2hun = cmd2hun - 1
+
+    if cmd2hun <= -1:
+        cmd2hun = 0
+        cmd2ten = 0
+        cmd2one = 0
+
+def check_math_cmd3():
+    global cmd3one
+    global cmd3ten
+    global cmd3hun
+    if cmd3one >= 10:
+        cmd3one = cmd3one - 10
+        cmd3ten = cmd3ten + 1
+
+    if cmd3one <= -1:
+        cmd3one = cmd3one + 10
+        cmd3ten = cmd3ten - 1
+
+    if cmd3ten >= 10:
+        cmd3ten = cmd3ten - 10
+        cmd3hun = cmd3hun + 1
+
+    if cmd3ten <= -1:
+        cmd3ten = cmd3ten + 10
+        cmd3hun = cmd3hun - 1
+
+    if cmd3hun <= -1:
+        cmd3hun = 0
+        cmd3ten = 0
+        cmd3one = 0
+    
+def check_math_poison():
+    global poisonone
+    global poisonten
+    global poisonhun
+    if poisonone >= 10:
+        poisonone = poisonone - 10
+        poisonten = poisonten + 1
+
+    if poisonone <= -1:
+        poisonone = poisonone + 10
+        poisonten = poisonten - 1
+
+    if poisonten >= 10:
+        poisonten = poisonten - 10
+        poisonhun = poisonhun + 1
+
+    if poisonten <= -1:
+        poisonten = poisonten + 10
+        poisonhun = poisonhun - 1
+
+    if poisonhun <= -1:
+        poisonhun = 0
+        poisonten = 0
+        poisonone = 0
+
+def font_swap():
+    global font_selection
+    global grid_num0
+    global grid_num4
+    global grid_num1
+    global grid_num2
+    global grid_num5
+    global grid_num6
+    global grid_num3
+    global grid_num7
+    global font_tile
+    if font_selection == 1:
+        font, palette = adafruit_imageload.load("Sprite Sheets/Sprite1.bmp",
+                                                bitmap=displayio.Bitmap,
+                                                palette=displayio.Palette)
+    if font_selection == 2:
+        font, palette = adafruit_imageload.load("Sprite Sheets/Sprite2.bmp",
+                                                bitmap=displayio.Bitmap,
+                                                palette=displayio.Palette)
+
+    if font_selection == 3:
+        font, palette = adafruit_imageload.load("Sprite Sheets/Sprite3.bmp",
+                                                bitmap=displayio.Bitmap,
+                                                palette=displayio.Palette)
+
+    font_tile = displayio.TileGrid(font,
+                                   pixel_shader=palette,
+                                   width=4,
+                                   height=2,
+                                   tile_width=32,
+                                   tile_height=32)
+    #  Group setup
+    group = displayio.Group(scale=1)
+    group.append(font_tile)
+
+    #  Tile setup
+    font_tile[0] = grid_num0  # life icon
+    font_tile[4] = grid_num4  # commander and poison icon
+    font_tile[1] = grid_num1  # life tens display
+    font_tile[2] = grid_num2  # life ones display
+    font_tile[5] = grid_num5  # commander and poison tens display
+    font_tile[6] = grid_num6  # commander and poison ones display
+    font_tile[3] = grid_num3  # selection display
+    font_tile[7] = grid_num7  # selection display
+
+    #  Display screen 
+    display.root_group = group
+    group.x = 0
+    group.y = 0
 
 while True:
     #  Life Count
@@ -134,29 +341,33 @@ while True:
         #  Increment the ones field by 1
         deb_switch1.update()
         if deb_switch1.fell:
-            lifetotalone = lifetotalone + 1
-            lifetotalupdate = 1
+            lifeone = lifeone + 1
+            check_math_life()
+            update_life()
             print("key 1 press")
 
         #  Decrement the ones field by -1
         deb_switch2.update()
         if deb_switch2.fell:
-            lifetotalone = lifetotalone - 1
-            lifetotalupdate = 1
+            lifeone = lifeone - 1
+            check_math_life()
+            update_life()
             print("key 2 press")
 
         #  Increment the tens field by 1
         deb_switch3.update()
         if deb_switch3.fell:
-            lifetotalten = lifetotalten + 1
-            lifetotalupdate = 1
+            lifeten = lifeten + 1
+            check_math_life()
+            update_life()
             print("key 3 press")
 
         #  Decrement the tens field by -1
         deb_switch4.update()
         if deb_switch4.fell:
-            lifetotalten = lifetotalten - 1
-            lifetotalupdate = 1
+            lifeten = lifeten - 1
+            check_math_life()
+            update_life()
             print("key 4 press")
 
         #  Move Selection
@@ -168,96 +379,50 @@ while True:
         #  Reset
         deb_switch6.update()
         if deb_switch6.fell:
-            lifetotalhun = 0
-            lifetotalten = 4
-            lifetotalone = 0
-            lifetotalupdate = 1
+            lifehun = 0
+            lifeten = 4
+            lifeone = 0
+            update_life()
             print("key 6 press")
-
-        #  Math
-        if lifetotalone >= 10:
-            lifetotalone = 0
-            lifetotalten = lifetotalten + 1
-            lifetotalupdate = 1
-
-        if lifetotalone <= -1:
-            lifetotalone = 9
-            lifetotalten = lifetotalten - 1
-            lifetotalupdate = 1
-
-        if lifetotalten >= 10:
-            lifetotalten = 0
-            lifetotalhun = lifetotalhun + 1
-            lifetotalupdate = 1
-
-        if lifetotalten <= -1:
-            lifetotalten = 9
-            lifetotalhun = lifetotalhun - 1
-            lifetotalupdate = 1
-
-        #  Floor to stop from going negative
-        if lifetotalhun <= -1:
-            lifetotalhun = 0
-            lifetotalten = 0
-            lifetotalone = 0
-            lifetotalupdate = 1
-
-        #  For debug printing
-        lifetotal = lifetotalhun, lifetotalten, lifetotalone
-
-        #  Update function
-        if lifetotalupdate == 1:
-            grid_num1 = lifetotalten
-            tile_grid[1] = grid_num1
-            grid_num2 = lifetotalone
-            tile_grid[2] = grid_num2
-            print(lifetotal)
-            lifetotalupdate = 0
 
         #  Move Cursor on display
         if selection == 2:
             grid_num3 = 13
-            grid_num4 = 12
-            grid_num5 = 14
-            tile_grid[3] = grid_num3
-            tile_grid[7] = grid_num4
-            tile_grid[4] = grid_num5
-            commander1update = 1
-
-        commander1 = commander1hun, commander1ten, commander1one
-
-        if commander1update == 1:
-            grid_num5 = commander1ten
-            tile_grid[5] = grid_num5
-            grid_num6 = commander1one
-            tile_grid[6] = grid_num6
-            print(commander1)
-            commander1update = 0
+            grid_num7 = 12
+            grid_num4 = 14
+            font_tile[3] = grid_num3
+            font_tile[7] = grid_num7
+            font_tile[4] = grid_num4
+            update_cmd1()
 
     #  Commander 1 Damage Tracker
     while selection == 2:
         deb_switch1.update()
         if deb_switch1.fell:
-            commander1one = commander1one + 1
-            commander1update = 1
+            cmd1one = cmd1one + 1
+            check_math_cmd1()
+            update_cmd1()
             print("key 1 press")
 
         deb_switch2.update()
         if deb_switch2.fell:
-            commander1one = commander1one - 1
-            commander1update = 1
+            cmd1one = cmd1one - 1
+            check_math_cmd1()
+            update_cmd1()
             print("key 2 press")
 
         deb_switch3.update()
         if deb_switch3.fell:
-            commander1ten = commander1ten + 1
-            commander1update = 1
+            cmd1ten = cmd1ten + 1
+            check_math_cmd1()
+            update_cmd1()
             print("key 3 press")
 
         deb_switch4.update()
         if deb_switch4.fell:
-            commander1ten = commander1ten - 1
-            commander1update = 1
+            cmd1ten = cmd1ten - 1
+            check_math_cmd1()
+            update_cmd1()
             print("key 4 press")
 
         deb_switch5.update()
@@ -267,91 +432,49 @@ while True:
 
         deb_switch6.update()
         if deb_switch6.fell:
-            commander1hun = 0
-            commander1ten = 0
-            commander1one = 0
-            commander1update = 1
+            cmd1hun = 0
+            cmd1ten = 0
+            cmd1one = 0
+            update_cmd1()
             print("key 6 press")
-
-        if commander1one >= 10:
-            commander1one = 0
-            commander1ten = commander1ten + 1
-            commander1update = 1
-
-        if commander1one <= -1:
-            commander1one = 9
-            commander1ten = commander1ten - 1
-            commander1update = 1
-
-        if commander1ten >= 10:
-            commander1ten = 0
-            commander1hun = commander1hun + 1
-            commander1update = 1
-
-        if commander1ten <= -1:
-            commander1ten = 9
-            commander1hun = commander1hun - 1
-            commander1update = 1
-
-        if commander1hun <= -1:
-            commander1hun = 0
-            commander1ten = 0
-            commander1one = 0
-            commander1update = 1
-
-        commander1 = commander1hun, commander1ten, commander1one
-
-        if commander1update == 1:
-            grid_num5 = commander1ten
-            tile_grid[5] = grid_num5
-            grid_num6 = commander1one
-            tile_grid[6] = grid_num6
-            print(commander1)
-            commander1update = 0
 
         if selection == 3:
             grid_num3 = 13
-            grid_num4 = 12
-            grid_num5 = 15
-            tile_grid[3] = grid_num3
-            tile_grid[7] = grid_num4
-            tile_grid[4] = grid_num5
-            commander2update = 1
-
-        commander2 = commander2hun, commander2ten, commander2one
-
-        if commander2update == 1:
-            grid_num5 = commander2ten
-            tile_grid[5] = grid_num5
-            grid_num6 = commander2one
-            tile_grid[6] = grid_num6
-            print(commander2)
-            commander2update = 0
+            grid_num7 = 12
+            grid_num4 = 15
+            font_tile[3] = grid_num3
+            font_tile[7] = grid_num7
+            font_tile[4] = grid_num4
+            update_cmd2()
 
     #  Commander 2 Damage Tracker
     while selection == 3:
         deb_switch1.update()
         if deb_switch1.fell:
-            commander2one = commander2one + 1
-            commander2update = 1
+            cmd2one = cmd2one + 1
+            check_math_cmd2()
+            update_cmd2()
             print("key 1 press")
 
         deb_switch2.update()
         if deb_switch2.fell:
-            commander2one = commander2one - 1
-            commander2update = 1
+            cmd2one = cmd2one - 1
+            check_math_cmd2()
+            update_cmd2()
             print("key 2 press")
 
         deb_switch3.update()
         if deb_switch3.fell:
-            commander2ten = commander2ten + 1
-            commander2update = 1
+            cmd2ten = cmd2ten + 1
+            check_math_cmd2()
+            update_cmd2()
             print("key 3 press")
 
         deb_switch4.update()
         if deb_switch4.fell:
-            commander2ten = commander2ten - 1
-            commander2update = 1
+            cmd2ten = cmd2ten - 1
+            check_math_cmd2()
+            update_cmd2()
             print("key 4 press")
 
         deb_switch5.update()
@@ -361,91 +484,49 @@ while True:
 
         deb_switch6.update()
         if deb_switch6.fell:
-            commander2hun = 0
-            commander2ten = 0
-            commander2one = 0
-            commander2update = 1
+            cmd2hun = 0
+            cmd2ten = 0
+            cmd2one = 0
+            update_cmd2()
             print("key 6 press")
-
-        if commander2one >= 10:
-            commander2one = 0
-            commander2ten = commander2ten + 1
-            commander2update = 1
-
-        if commander2one <= -1:
-            commander2one = 9
-            commander2ten = commander2ten - 1
-            commander2update = 1
-
-        if commander2ten >= 10:
-            commander2ten = 0
-            commander2hun = commander2hun + 1
-            commander2update = 1
-
-        if commander2ten <= -1:
-            commander2ten = 9
-            commander2hun = commander2hun - 1
-            commander2update = 1
-
-        if commander2hun <= -1:
-            commander2hun = 0
-            commander2ten = 0
-            commander2one = 0
-            commander2update = 1
-
-        commander2 = commander2hun, commander2ten, commander2one
-
-        if commander2update == 1:
-            grid_num5 = commander2ten
-            tile_grid[5] = grid_num5
-            grid_num6 = commander2one
-            tile_grid[6] = grid_num6
-            print(commander2)
-            commander2update = 0
 
         if selection == 4:
             grid_num3 = 13
-            grid_num4 = 12
-            grid_num5 = 16
-            tile_grid[3] = grid_num3
-            tile_grid[7] = grid_num4
-            tile_grid[4] = grid_num5
-            commander3update = 1
+            grid_num7 = 12
+            grid_num4 = 16
+            font_tile[3] = grid_num3
+            font_tile[7] = grid_num7
+            font_tile[4] = grid_num4
+            update_cmd3()
 
-        commander3 = commander3hun, commander3ten, commander3one
-
-        if commander3update == 1:
-            grid_num5 = commander3ten
-            tile_grid[5] = grid_num5
-            grid_num6 = commander3one
-            tile_grid[6] = grid_num6
-            print(commander3)
-            commander3update = 0
-      
     #  Commander 3 Damage Tracker
     while selection == 4:
         deb_switch1.update()
         if deb_switch1.fell:
-            commander3one = commander3one + 1
-            commander3update = 1
+            cmd3one = cmd3one + 1
+            check_math_cmd3()
+            update_cmd3()
             print("key 1 press")
 
         deb_switch2.update()
         if deb_switch2.fell:
-            commander3one = commander3one - 1
-            commander3update = 1
+            cmd3one = cmd3one - 1
+            check_math_cmd3()
+            update_cmd3()
             print("key 2 press")
 
         deb_switch3.update()
         if deb_switch3.fell:
-            commander3ten = commander3ten + 1
-            commander3update = 1
+            cmd3ten = cmd3ten + 1
+            check_math_cmd3()
+            update_cmd3()
             print("key 3 press")
 
         deb_switch4.update()
         if deb_switch4.fell:
-            commander3ten = commander3ten - 1
-            commander3update = 1
+            cmd3ten = cmd3ten - 1
+            check_math_cmd3()
+            update_cmd3()
             print("key 4 press")
 
         deb_switch5.update()
@@ -455,91 +536,49 @@ while True:
 
         deb_switch6.update()
         if deb_switch6.fell:
-            commander3hun = 0
-            commander3ten = 0
-            commander3one = 0
-            commander3update = 1
+            cmd3hun = 0
+            cmd3ten = 0
+            cmd3one = 0
+            update_cmd3()
             print("key 6 press")
-
-        if commander3one >= 10:
-            commander3one = 0
-            commander3ten = commander3ten + 1
-            commander3update = 1
-
-        if commander3one <= -1:
-            commander3one = 9
-            commander3ten = commander3ten - 1
-            commander3update = 1
-
-        if commander3ten >= 10:
-            commander3ten = 0
-            commander3hun = commander3hun + 1
-            commander3update = 1
-
-        if commander3ten <= -1:
-            commander3ten = 9
-            commander3hun = commander3hun - 1
-            commander3update = 1
-
-        if commander3hun <= -1:
-            commander3hun = 0
-            commander3ten = 0
-            commander3one = 0
-            commander3update = 1
-
-        commander3 = commander3hun, commander3ten, commander3one
-
-        if commander3update == 1:
-            grid_num5 = commander3ten
-            tile_grid[5] = grid_num5
-            grid_num6 = commander3one
-            tile_grid[6] = grid_num6
-            print(commander3)
-            commander3update = 0
 
         if selection == 5:
             grid_num3 = 13
-            grid_num4 = 12
-            grid_num5 = 11
-            tile_grid[3] = grid_num3
-            tile_grid[7] = grid_num4
-            tile_grid[4] = grid_num5
-            poisontotalupdate = 1
-
-        poisontotal = poisontotalhun, poisontotalten, poisontotalone
-
-        if poisontotalupdate == 1:
-            grid_num5 = poisontotalten
-            tile_grid[5] = grid_num5
-            grid_num6 = poisontotalone
-            tile_grid[6] = grid_num6
-            print(poisontotal)
-            poisontotalupdate = 0
+            grid_num7 = 12
+            grid_num4 = 11
+            font_tile[3] = grid_num3
+            font_tile[7] = grid_num7
+            font_tile[4] = grid_num4
+            update_poison()
 
     #  poison counters
     while selection == 5:
         deb_switch1.update()
         if deb_switch1.fell:
-            poisontotalone = poisontotalone + 1
-            poisontotalupdate = 1
+            poisonone = poisonone + 1
+            check_math_poison()
+            update_poison()
             print("key 1 press")
 
         deb_switch2.update()
         if deb_switch2.fell:
-            poisontotalone = poisontotalone - 1
-            poisontotalupdate = 1
+            poisonone = poisonone - 1
+            check_math_poison()
+            update_poison()
             print("key 2 press")
 
         deb_switch3.update()
         if deb_switch3.fell:
-            poisontotalone = poisontotalone + 5
-            poisontotalupdate = 1
+            poisonone = poisonone + 5
+            check_math_poison()
+            update_poison()
             print("key 3 press")
 
         deb_switch4.update()
         if deb_switch4.fell:
-            poisontotalone = poisontotalone - 5
-            poisontotalupdate = 1
+            poisonone = poisonone - 5
+            check_math_poison()
+            update_poison()
             print("key 4 press")
 
         deb_switch5.update()
@@ -549,63 +588,23 @@ while True:
 
         deb_switch6.update()
         if deb_switch6.fell:
-            poisontotalhun = 0
-            poisontotalten = 0
-            poisontotalone = 0
-            poisontotalupdate = 1
+            poisonhun = 0
+            poisonten = 0
+            poisonone = 0
+            font_selection = font_selection + 1
+            if font_selection >= 4:
+                font_selection = 1
+            print(font_selection)
+            font_swap()
+            update_life()
+            update_poison()
             print("key 6 press")
-
-        if poisontotalone >= 10:
-            poisontotalone = 0
-            poisontotalten = poisontotalten + 1
-            poisontotalupdate = 1
-
-        if poisontotalone <= -1:
-            poisontotalone = 9
-            poisontotalten = poisontotalten - 1
-            poisontotalupdate = 1
-
-        if poisontotalten >= 10:
-            poisontotalten = 0
-            poisontotalhun = poisontotalhun + 1
-            poisontotalupdate = 1
-
-        if poisontotalten <= -1:
-            poisontotalten = 9
-            poisontotalhun = poisontotalhun - 1
-            poisontotalupdate = 1
-
-        if poisontotalhun <= -1:
-            poisontotalhun = 0
-            poisontotalten = 0
-            poisontotalone = 0
-            poisontotalupdate = 1
-
-        poisontotal = poisontotalhun, poisontotalten, poisontotalone
-
-        if poisontotalupdate == 1:
-            grid_num5 = poisontotalten
-            tile_grid[5] = grid_num5
-            grid_num6 = poisontotalone
-            tile_grid[6] = grid_num6
-            print(poisontotal)
-            poisontotalupdate = 0
 
         if selection == 1:
             grid_num3 = 12
-            grid_num4 = 13
-            grid_num5 = 14
-            tile_grid[3] = grid_num3
-            tile_grid[7] = grid_num4
-            tile_grid[4] = grid_num5
-            commander1update = 1
-
-        commander1 = commander1hun, commander1ten, commander1one
-
-        if commander1update == 1:
-            grid_num5 = commander1ten
-            tile_grid[5] = grid_num5
-            grid_num6 = commander1one
-            tile_grid[6] = grid_num6
-            print(commander1)
-            commander1update = 0
+            grid_num7 = 13
+            grid_num4 = 14
+            font_tile[3] = grid_num3
+            font_tile[7] = grid_num7
+            font_tile[4] = grid_num4
+            update_cmd1()
