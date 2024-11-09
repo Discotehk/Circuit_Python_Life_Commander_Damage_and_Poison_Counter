@@ -34,8 +34,6 @@ The code should run on any microcontroller running Adafruit's Circuit Python 9. 
 
 The display I'm using is an i2c SSD1306 128 X 64. It breaks down to a 4 x 2 grid of 32x32 resolution tiles. 
 
-Create a "Sprite Sheets" folder in the root.
-
 The necessary libraries are from the adafruit-circuitpython-bundle-9.x-mpy-20240730 bundle and are as follows:
 
 	-adafruit_bus_device
