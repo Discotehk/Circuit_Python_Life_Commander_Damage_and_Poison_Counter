@@ -1,0 +1,6 @@
+1x PCB from gerber file. Order from your mfg of choice. I used JLCPCB.
+1x SSD1306 0.96" i2c OLDED. Pin order must be VCC, GND, SCL, SDA or it will not work with the pcb
+1x Raspberry Pi Pico (RP2040) or Pi Pico 2 (RP2350)
+1x SPDT slide switch - EG1218 - https://www.adafruit.com/product/805
+1x battery holder - BC3AAAPC - https://www.digikey.com/en/products/detail/mpd-memory-protection-devices/BC3AAAPC/2439250
+6x 6mm tactile button - B3F-1000-Omron - https://www.adafruit.com/product/367
