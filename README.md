@@ -39,3 +39,5 @@ The necessary libraries are from the adafruit-circuitpython-bundle-9.x-mpy-20240
 	-adafruit_debouncer.mpy
 	-adafruit_displayio_ssd1306.mpy
 	-adafruit_ticks.mpy
+
+Short usage video: https://youtube.com/shorts/-RFBCQj1ZtM?si=uCUZgVwuXs6LkOWH
