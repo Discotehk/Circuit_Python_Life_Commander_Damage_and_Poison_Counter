@@ -16,6 +16,10 @@ The lower right button, or B button, is for resetting the selected field. This w
    	-Left 	-10/-5
     -A 	Select counter
     -B 	Reset counter 	*When on poison counter, also cycles art
+    
+![PXL_20241109_075218074](https://github.com/user-attachments/assets/3d458073-2643-490d-8104-15a901abe026)
+![PXL_20241109_075238923](https://github.com/user-attachments/assets/f93ba74c-57a1-4d9a-bb2d-b4d3a700b145)
+![PXL_20241109_075144995](https://github.com/user-attachments/assets/b7e1b326-8456-4908-a650-7942d18fa2a7)
 
 As the code counts, it pulls the corresponding tile from the selected Sprite(x).bmp.
 I did this so I could easily stylize or change the numbers and icons as I feel. 
