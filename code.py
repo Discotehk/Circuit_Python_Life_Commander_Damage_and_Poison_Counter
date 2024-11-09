@@ -55,7 +55,7 @@ font_tile[6] = grid_num6  # commander and poison ones display
 font_tile[3] = grid_num3  # selection display
 font_tile[7] = grid_num7  # selection display
 
-#  Display screen 
+#  Display screen
 display.root_group = group
 group.x = 0
 group.y = 0
@@ -119,6 +119,68 @@ poisonten = 0
 poisonone = 0
 poison = poisonhun, poisonten, poisonone
 
+#  Move Cursor on display
+def selection_update():
+    global selection
+    global grid_num0
+    global grid_num4
+    global grid_num1
+    global grid_num2
+    global grid_num5
+    global grid_num6
+    global grid_num3
+    global grid_num7
+    global font_tile
+    selection = selection + 1
+    if selection >= 6:
+        selection = 1
+    print("selection:", selection)
+
+    if selection == 1:
+        grid_num3 = 12
+        grid_num7 = 13
+        grid_num4 = 14
+        font_tile[3] = grid_num3
+        font_tile[7] = grid_num7
+        font_tile[4] = grid_num4
+        update_cmd1()
+
+    if selection == 2:
+        grid_num3 = 13
+        grid_num7 = 12
+        grid_num4 = 14
+        font_tile[3] = grid_num3
+        font_tile[7] = grid_num7
+        font_tile[4] = grid_num4
+        update_cmd1()
+
+    if selection == 3:
+        grid_num3 = 13
+        grid_num7 = 12
+        grid_num4 = 15
+        font_tile[3] = grid_num3
+        font_tile[7] = grid_num7
+        font_tile[4] = grid_num4
+        update_cmd2()
+
+    if selection == 4:
+        grid_num3 = 13
+        grid_num7 = 12
+        grid_num4 = 16
+        font_tile[3] = grid_num3
+        font_tile[7] = grid_num7
+        font_tile[4] = grid_num4
+        update_cmd3()
+
+    if selection == 5:
+        grid_num3 = 13
+        grid_num7 = 12
+        grid_num4 = 11
+        font_tile[3] = grid_num3
+        font_tile[7] = grid_num7
+        font_tile[4] = grid_num4
+        update_poison()
+
 def update_life():
     grid_num1 = lifeten
     font_tile[1] = grid_num1
@@ -126,7 +188,7 @@ def update_life():
     font_tile[2] = grid_num2
     life = lifehun, lifeten, lifeone  # For debug printing
     print("life", life)
-    
+
 def update_cmd1():
     grid_num5 = cmd1ten
     font_tile[5] = grid_num5
@@ -159,131 +221,72 @@ def update_poison():
     poison = poisonhun, poisonten, poisonone
     print("poison", poison)
 
-def check_math_life():
+def check_math(ones, tens, huns):
+    global selection
     global lifeone
     global lifeten
     global lifehun
-    if lifeone >= 10:
-        lifeone = lifeone - 10
-        lifeten = lifeten + 1
-
-    if lifeone <= -1:
-        lifeone = lifeone + 10
-        lifeten = lifeten - 1
-
-    if lifeten >= 10:
-        lifeten = lifeten - 10
-        lifehun = lifehun + 1
-
-    if lifeten <= -1:
-        lifeten = lifeten + 10
-        lifehun = lifehun - 1
-
-    #  Floor to stop from going negative
-    if lifehun <= -1:
-        lifehun = 0
-        lifeten = 0
-        lifeone = 0
-
-def check_math_cmd1():
     global cmd1hun
     global cmd1ten
     global cmd1one
-    if cmd1one >= 10:
-        cmd1one = cmd1one - 10
-        cmd1ten = cmd1ten + 1
-
-    if cmd1one <= -1:
-        cmd1one = cmd1one + 10
-        cmd1ten = cmd1ten - 1
-
-    if cmd1ten >= 10:
-        cmd1ten = cmd1ten - 10
-        cmd1hun = cmd1hun + 1
-
-    if cmd1ten <= -1:
-        cmd1ten = cmd1ten + 10
-        cmd1hun = cmd1hun - 1
-
-    if cmd1hun <= -1:
-        cmd1hun = 0
-        cmd1ten = 0
-        cmd1one = 0
-
-def check_math_cmd2():
-    global cmd2one
-    global cmd2ten
     global cmd2hun
-    if cmd2one >= 10:
-        cmd2one = cmd2one - 10
-        cmd2ten = cmd2ten + 1
-
-    if cmd2one <= -1:
-        cmd2one = cmd2one + 10
-        cmd2ten = cmd2ten - 1
-
-    if cmd2ten >= 10:
-        cmd2ten = cmd2ten - 10
-        cmd2hun = cmd2hun + 1
-
-    if cmd2ten <= -1:
-        cmd2ten = cmd2ten + 10
-        cmd2hun = cmd2hun - 1
-
-    if cmd2hun <= -1:
-        cmd2hun = 0
-        cmd2ten = 0
-        cmd2one = 0
-
-def check_math_cmd3():
-    global cmd3one
-    global cmd3ten
+    global cmd2ten
+    global cmd2one
     global cmd3hun
-    if cmd3one >= 10:
-        cmd3one = cmd3one - 10
-        cmd3ten = cmd3ten + 1
-
-    if cmd3one <= -1:
-        cmd3one = cmd3one + 10
-        cmd3ten = cmd3ten - 1
-
-    if cmd3ten >= 10:
-        cmd3ten = cmd3ten - 10
-        cmd3hun = cmd3hun + 1
-
-    if cmd3ten <= -1:
-        cmd3ten = cmd3ten + 10
-        cmd3hun = cmd3hun - 1
-
-    if cmd3hun <= -1:
-        cmd3hun = 0
-        cmd3ten = 0
-        cmd3one = 0
-    
-def check_math_poison():
+    global cmd3ten
+    global cmd3one
     global poisonone
     global poisonten
     global poisonhun
-    if poisonone >= 10:
-        poisonone = poisonone - 10
-        poisonten = poisonten + 1
+    ones = ones
+    tens = tens
+    huns = huns
+    if ones >= 10:
+        ones = ones - 10
+        tens = tens + 1
 
-    if poisonone <= -1:
-        poisonone = poisonone + 10
-        poisonten = poisonten - 1
+    if ones <= -1:
+        ones = ones + 10
+        tens = tens - 1
 
-    if poisonten >= 10:
-        poisonten = poisonten - 10
-        poisonhun = poisonhun + 1
+    if tens >= 10:
+        tens = tens - 10
+        huns = huns + 1
 
-    if poisonten <= -1:
-        poisonten = poisonten + 10
-        poisonhun = poisonhun - 1
+    if tens <= -1:
+        tens = tens + 10
+        huns = huns - 1
 
-    if poisonhun <= -1:
-        poisonhun = 0
-        poisonten = 0
-        poisonone = 0
+    #  Floor to stop from going negative
+    if huns <= -1:
+        huns = 0
+        tens = 0
+        ones = 0
+
+    if selection == 1:
+        lifehun = huns
+        lifeten = tens
+        lifeone = ones
+    
+    if selection == 2:
+        cmd1hun = huns
+        cmd1ten = tens
+        cmd1one = ones
+    
+    if selection == 3:
+        cmd2hun = huns
+        cmd2ten = tens
+        cmd2one = ones
+    
+    if selection == 4:
+        cmd3hun = huns
+        cmd3ten = tens
+        cmd3one = ones
+    
+    if selection == 5:
+        poisonhun = huns
+        poisonten = tens
+        poisonone = ones
 
 def font_swap():
     global font_selection
@@ -330,281 +333,150 @@ def font_swap():
     font_tile[3] = grid_num3  # selection display
     font_tile[7] = grid_num7  # selection display
 
-    #  Display screen 
+    #  Display screen
     display.root_group = group
     group.x = 0
     group.y = 0
 
 while True:
-    #  Life Count
-    while selection == 1:
-        #  Increment the ones field by 1
-        deb_switch1.update()
-        if deb_switch1.fell:
+    #  Increment the ones field by 1
+    deb_switch1.update()
+    if deb_switch1.fell:
+        if selection == 1:
             lifeone = lifeone + 1
-            check_math_life()
+            check_math(lifeone, lifeten, lifehun)
             update_life()
-            print("key 1 press")
+        if selection == 2:
+            cmd1one = cmd1one + 1
+            check_math(cmd1one, cmd1ten, cmd1hun)
+            update_cmd1()
+        if selection == 3:
+            cmd2one = cmd2one + 1
+            check_math(cmd2one, cmd2ten, cmd2hun)
+            update_cmd2()
+        if selection == 4:
+            cmd3one = cmd3one + 1
+            check_math(cmd3one, cmd3ten, cmd3hun)
+            update_cmd3()
+        if selection == 5:
+            poisonone = poisonone + 1
+            check_math(poisonone, poisonten, poisonhun)
+            update_poison()
+        print("key 1 press")
 
-        #  Decrement the ones field by -1
-        deb_switch2.update()
-        if deb_switch2.fell:
+    #  Decrement the ones field by -1
+    deb_switch2.update()
+    if deb_switch2.fell:
+        if selection == 1:
             lifeone = lifeone - 1
-            check_math_life()
+            check_math(lifeone, lifeten, lifehun)
             update_life()
-            print("key 2 press")
+        if selection == 2:
+            cmd1one = cmd1one - 1
+            check_math(cmd1one, cmd1ten, cmd1hun)
+            update_cmd1()
+        if selection == 3:
+            cmd2one = cmd2one - 1
+            check_math(cmd2one, cmd2ten, cmd2hun)
+            update_cmd2()
+        if selection == 4:
+            cmd3one = cmd3one - 1
+            check_math(cmd3one, cmd3ten, cmd3hun)
+            update_cmd3()
+        if selection == 5:
+            poisonone = poisonone - 1
+            check_math(poisonone, poisonten, poisonhun)
+            update_poison()
+        print("key 2 press")
 
-        #  Increment the tens field by 1
-        deb_switch3.update()
-        if deb_switch3.fell:
+    #  Increment the tens field by 1
+    deb_switch3.update()
+    if deb_switch3.fell:
+        if selection == 1:
             lifeten = lifeten + 1
-            check_math_life()
+            check_math(lifeone, lifeten, lifehun)
             update_life()
-            print("key 3 press")
+        if selection == 2:
+            cmd1ten = cmd1ten + 1
+            check_math(cmd1one, cmd1ten, cmd1hun)
+            update_cmd1()
+        if selection == 3:
+            cmd2ten = cmd2ten + 1
+            check_math(cmd2one, cmd2ten, cmd2hun)
+            update_cmd2()
+        if selection == 4:
+            cmd3ten = cmd3ten + 1
+            check_math(cmd3one, cmd3ten, cmd3hun)
+            update_cmd3()
+        if selection == 5:
+            poisonone = poisonone + 5
+            check_math(poisonone, poisonten, poisonhun)
+            update_poison()
+        print("key 3 press")
 
-        #  Decrement the tens field by -1
-        deb_switch4.update()
-        if deb_switch4.fell:
+    #  Decrement the tens field by -1
+    deb_switch4.update()
+    if deb_switch4.fell:
+        if selection == 1:
             lifeten = lifeten - 1
-            check_math_life()
+            check_math(lifeone, lifeten, lifehun)
             update_life()
-            print("key 4 press")
+        if selection == 2:
+            cmd1ten = cmd1ten - 1
+            check_math(cmd1one, cmd1ten, cmd1hun)
+            update_cmd1()
+        if selection == 3:
+            cmd2ten = cmd2ten - 1
+            check_math(cmd2one, cmd2ten, cmd2hun)
+            update_cmd2()
+        if selection == 4:
+            cmd3ten = cmd3ten - 1
+            check_math(cmd3one, cmd3ten, cmd3hun)
+            update_cmd3()
+        if selection == 5:
+            poisonone = poisonone - 5
+            check_math(poisonone, poisonten, poisonhun)
+            update_poison()
+        print("key 4 press")
 
-        #  Move Selection
-        deb_switch5.update()
-        if deb_switch5.fell:
-            selection = 2
-            print("key 5 press")
+    #  Move Selection
+    deb_switch5.update()
+    if deb_switch5.fell:
+        selection_update()
+        print("key 5 press")
 
-        #  Reset
-        deb_switch6.update()
-        if deb_switch6.fell:
+    #  Reset
+    deb_switch6.update()
+    if deb_switch6.fell:
+        if selection == 1:
             lifehun = 0
             lifeten = 4
             lifeone = 0
             update_life()
-            print("key 6 press")
-
-        #  Move Cursor on display
         if selection == 2:
-            grid_num3 = 13
-            grid_num7 = 12
-            grid_num4 = 14
-            font_tile[3] = grid_num3
-            font_tile[7] = grid_num7
-            font_tile[4] = grid_num4
-            update_cmd1()
-
-    #  Commander 1 Damage Tracker
-    while selection == 2:
-        deb_switch1.update()
-        if deb_switch1.fell:
-            cmd1one = cmd1one + 1
-            check_math_cmd1()
-            update_cmd1()
-            print("key 1 press")
-
-        deb_switch2.update()
-        if deb_switch2.fell:
-            cmd1one = cmd1one - 1
-            check_math_cmd1()
-            update_cmd1()
-            print("key 2 press")
-
-        deb_switch3.update()
-        if deb_switch3.fell:
-            cmd1ten = cmd1ten + 1
-            check_math_cmd1()
-            update_cmd1()
-            print("key 3 press")
-
-        deb_switch4.update()
-        if deb_switch4.fell:
-            cmd1ten = cmd1ten - 1
-            check_math_cmd1()
-            update_cmd1()
-            print("key 4 press")
-
-        deb_switch5.update()
-        if deb_switch5.fell:
-            selection = 3
-            print("key 5 press")
-
-        deb_switch6.update()
-        if deb_switch6.fell:
-            cmd1hun = 0
-            cmd1ten = 0
             cmd1one = 0
+            cmd1ten = 0
+            cmd1hun = 0
             update_cmd1()
-            print("key 6 press")
-
         if selection == 3:
-            grid_num3 = 13
-            grid_num7 = 12
-            grid_num4 = 15
-            font_tile[3] = grid_num3
-            font_tile[7] = grid_num7
-            font_tile[4] = grid_num4
-            update_cmd2()
-
-    #  Commander 2 Damage Tracker
-    while selection == 3:
-        deb_switch1.update()
-        if deb_switch1.fell:
-            cmd2one = cmd2one + 1
-            check_math_cmd2()
-            update_cmd2()
-            print("key 1 press")
-
-        deb_switch2.update()
-        if deb_switch2.fell:
-            cmd2one = cmd2one - 1
-            check_math_cmd2()
-            update_cmd2()
-            print("key 2 press")
-
-        deb_switch3.update()
-        if deb_switch3.fell:
-            cmd2ten = cmd2ten + 1
-            check_math_cmd2()
-            update_cmd2()
-            print("key 3 press")
-
-        deb_switch4.update()
-        if deb_switch4.fell:
-            cmd2ten = cmd2ten - 1
-            check_math_cmd2()
-            update_cmd2()
-            print("key 4 press")
-
-        deb_switch5.update()
-        if deb_switch5.fell:
-            selection = 4
-            print("key 5 press")
-
-        deb_switch6.update()
-        if deb_switch6.fell:
-            cmd2hun = 0
-            cmd2ten = 0
             cmd2one = 0
+            cmd2ten = 0
+            cmd2hun = 0
             update_cmd2()
-            print("key 6 press")
-
         if selection == 4:
-            grid_num3 = 13
-            grid_num7 = 12
-            grid_num4 = 16
-            font_tile[3] = grid_num3
-            font_tile[7] = grid_num7
-            font_tile[4] = grid_num4
-            update_cmd3()
-
-    #  Commander 3 Damage Tracker
-    while selection == 4:
-        deb_switch1.update()
-        if deb_switch1.fell:
-            cmd3one = cmd3one + 1
-            check_math_cmd3()
-            update_cmd3()
-            print("key 1 press")
-
-        deb_switch2.update()
-        if deb_switch2.fell:
-            cmd3one = cmd3one - 1
-            check_math_cmd3()
-            update_cmd3()
-            print("key 2 press")
-
-        deb_switch3.update()
-        if deb_switch3.fell:
-            cmd3ten = cmd3ten + 1
-            check_math_cmd3()
-            update_cmd3()
-            print("key 3 press")
-
-        deb_switch4.update()
-        if deb_switch4.fell:
-            cmd3ten = cmd3ten - 1
-            check_math_cmd3()
-            update_cmd3()
-            print("key 4 press")
-
-        deb_switch5.update()
-        if deb_switch5.fell:
-            selection = 5
-            print("key 5 press")
-
-        deb_switch6.update()
-        if deb_switch6.fell:
-            cmd3hun = 0
-            cmd3ten = 0
             cmd3one = 0
+            cmd3ten = 0
+            cmd3hun = 0
             update_cmd3()
-            print("key 6 press")
-
         if selection == 5:
-            grid_num3 = 13
-            grid_num7 = 12
-            grid_num4 = 11
-            font_tile[3] = grid_num3
-            font_tile[7] = grid_num7
-            font_tile[4] = grid_num4
-            update_poison()
-
-    #  poison counters
-    while selection == 5:
-        deb_switch1.update()
-        if deb_switch1.fell:
-            poisonone = poisonone + 1
-            check_math_poison()
-            update_poison()
-            print("key 1 press")
-
-        deb_switch2.update()
-        if deb_switch2.fell:
-            poisonone = poisonone - 1
-            check_math_poison()
-            update_poison()
-            print("key 2 press")
-
-        deb_switch3.update()
-        if deb_switch3.fell:
-            poisonone = poisonone + 5
-            check_math_poison()
-            update_poison()
-            print("key 3 press")
-
-        deb_switch4.update()
-        if deb_switch4.fell:
-            poisonone = poisonone - 5
-            check_math_poison()
-            update_poison()
-            print("key 4 press")
-
-        deb_switch5.update()
-        if deb_switch5.fell:
-            selection = 1
-            print("key 5 press")
-
-        deb_switch6.update()
-        if deb_switch6.fell:
-            poisonhun = 0
-            poisonten = 0
             poisonone = 0
+            poisonten = 0
+            poisonhun = 0
             font_selection = font_selection + 1
             if font_selection >= 4:
                 font_selection = 1
-            print(font_selection)
+            print("font_selection:", font_selection)
             font_swap()
             update_life()
             update_poison()
-            print("key 6 press")
-
-        if selection == 1:
-            grid_num3 = 12
-            grid_num7 = 13
-            grid_num4 = 14
-            font_tile[3] = grid_num3
-            font_tile[7] = grid_num7
-            font_tile[4] = grid_num4
-            update_cmd1()
+        print("key 6 press")
