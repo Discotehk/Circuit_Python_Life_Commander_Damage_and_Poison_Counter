@@ -1,0 +1,26 @@
+To assemble the counter youu'll need all of the materials from the BoM.txt as well as solder, a soldering iron and 3x AAA batteries. Flush cutters are preffered so you can snip off the protruding leads as close to the board as possible after soldering. 
+
+Wear safetly glasses.
+
+You can solder on the components in pretty much any order but the battery pack must go on last as it covers all of the buttons and the slide switch leads.
+
+Before soldering anything, make sure to check your components are working if you can.
+
+I found it easiest to assemble in this order:
+  -Pi Pico
+  -Screen
+  -Buttons
+  -Slide Switch
+  -Trim the leads
+  -Battery pack
+I recommend using some double sided tape to hold the battery pack in place. You can also secure it with screws and nuts through the holes in the center or just glue it in place. Just don't let all the battery weight be on the solder joints. 
+
+Once it's soldered together, and with the power switch set to the left for off, go ahead and plug the pico into your computer.
+
+If you are not running Circuit Python 9+ go get the uf2 from Adafruit and update your board. While your there, get the library bundle for 9 too. I do not know if it will run on any other version but if you want to try it I take no responsibility if something breaks. But also good luck.
+
+Once your Pi Pico 1 or 2 is up to date go ahead and drop the required libraries in the lib folder on your pi. Create a folder in the root named "Sprite Sheets". Put your Sprite1.bmp and any other sprite sheets with the correct naming in the folder you just created. And finally drop the code.py in the root to replace the existing file.
+
+Once the Pico boots you should see a life, 40, an arrow, a Cmd1 icon, 00 and a blank space. 
+
+If all goes well the buttons should work and you can now track your life total and more. 
