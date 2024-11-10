@@ -9,7 +9,11 @@ All of these files go in your CIRCUITPY drive root
 
 ----Instrunctions----
 
-	-Button		Action
+	   ^
+	<-   ->      A
+ 	   v       B
+     
+ 	-Button		Action
  	-Up 		+1
  	-Down 		-1
   	-Right 		+10/+5
