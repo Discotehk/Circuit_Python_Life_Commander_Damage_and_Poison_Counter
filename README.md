@@ -1,4 +1,33 @@
-This is a pretty simple Life, Commander Damage, and Poison Counter for Magic the Gathering.
+----Setup----
+All of these files go in your CIRCUITPY drive root
+1. Add the required libraries to the lib foler. See below for list
+2. Create a folder names "Sprite Sheets"
+3. Add up to 3 .bmp files to that holder. Use Sprite1.bmp as example/template
+4. Create a .txt file named "Sprite Selection.txt"
+5. Add code.py and boot.py
+6. After adding boot.py you will need to hold the A button when connecting USB to edit the files with your PC
+
+----Instrunctions----
+
+	-Button		Action
+ 	-Up 		+1
+ 	-Down 		-1
+  	-Right 		+10/+5
+   	-Left 		-10/-5
+    -A 		Select counter
+    -B 		Reset counter 	*When on poison counter, also cycles art and saves your selection
+
+The necessary libraries are from the adafruit-circuitpython-bundle-9.x-mpy-20240730 bundle and are as follows:
+
+	-adafruit_bus_device
+ 	-adafruit_display_text
+	-adafruit_displayio_layout
+	-adafruit_imageload
+	-adafruit_debouncer.mpy
+	-adafruit_displayio_ssd1306.mpy
+	-adafruit_ticks.mpy
+
+This is a pretty simple Life, Commander Damage, and Poison Counter for Magic the Gathering written in Circuitpython.
 
 When turned on it will display two icons, one for life and one for commander 1, a starting total for each, and a basic cursor to show selection.
 
@@ -10,13 +39,6 @@ The upper right button, or A button, is for scrolling through the various counte
 
 The lower right button, or B button, is for resetting the selected field. This will put life back to 40, and all other fields to 0. As an added feature, if you have the poison field selected, you can scroll through additional sprite sheets. 
 
-	-Up 	+1
- 	-Down 	-1
-  	-Right 	+10/+5
-   	-Left 	-10/-5
-    -A 	Select counter
-    -B 	Reset counter 	*When on poison counter, also cycles art
-    
 ![PXL_20241109_075218074](https://github.com/user-attachments/assets/3d458073-2643-490d-8104-15a901abe026)
 ![PXL_20241109_075238923](https://github.com/user-attachments/assets/f93ba74c-57a1-4d9a-bb2d-b4d3a700b145)
 ![PXL_20241109_075144995](https://github.com/user-attachments/assets/b7e1b326-8456-4908-a650-7942d18fa2a7)
@@ -34,14 +56,6 @@ The code should run on any microcontroller running Adafruit's Circuit Python 9. 
 
 The display I'm using is an i2c SSD1306 128 X 64. It breaks down to a 4 x 2 grid of 32x32 resolution tiles. 
 
-The necessary libraries are from the adafruit-circuitpython-bundle-9.x-mpy-20240730 bundle and are as follows:
 
-	-adafruit_bus_device
- 	-adafruit_display_text
-	-adafruit_displayio_layout
-	-adafruit_imageload
-	-adafruit_debouncer.mpy
-	-adafruit_displayio_ssd1306.mpy
-	-adafruit_ticks.mpy
 
 Short usage video: https://youtube.com/shorts/-RFBCQj1ZtM?si=uCUZgVwuXs6LkOWH
