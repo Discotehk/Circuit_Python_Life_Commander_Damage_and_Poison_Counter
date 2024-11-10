@@ -267,22 +267,22 @@ def check_math(ones, tens, huns):
         lifehun = huns
         lifeten = tens
         lifeone = ones
-    
+
     if selection == 2:
         cmd1hun = huns
         cmd1ten = tens
         cmd1one = ones
-    
+
     if selection == 3:
         cmd2hun = huns
         cmd2ten = tens
         cmd2one = ones
-    
+
     if selection == 4:
         cmd3hun = huns
         cmd3ten = tens
         cmd3one = ones
-    
+
     if selection == 5:
         poisonhun = huns
         poisonten = tens
@@ -337,6 +337,12 @@ def font_swap():
     display.root_group = group
     group.x = 0
     group.y = 0
+
+with open("/Sprite Sheets/Sprite Selection.txt", 'r') as f:
+    font_selection = int(f.read())
+    print("font_selection:", font_selection)
+    f.close()
+    font_swap()
 
 while True:
     #  Increment the ones field by 1
@@ -476,6 +482,9 @@ while True:
             if font_selection >= 4:
                 font_selection = 1
             print("font_selection:", font_selection)
+            with open("/Sprite Sheets/Sprite Selection.txt", 'w') as f:
+                f.write(str(font_selection))
+                f.close()
             font_swap()
             update_life()
             update_poison()
