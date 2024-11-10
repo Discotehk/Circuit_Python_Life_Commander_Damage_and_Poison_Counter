@@ -27,6 +27,11 @@ The necessary libraries are from the adafruit-circuitpython-bundle-9.x-mpy-20240
 	-adafruit_displayio_ssd1306.mpy
 	-adafruit_ticks.mpy
 
+Bitmap format 32 x 544 pixels for 17 32x32 tiles, numbers 0 thru 9, life icon, poison icon, cursor, blank, commander1, commander2, commander3
+
+![sprite_sheet](https://github.com/user-attachments/assets/9a8ec4f1-f174-44de-8d06-fc850b300082)
+
+
 This is a pretty simple Life, Commander Damage, and Poison Counter for Magic the Gathering written in Circuitpython.
 
 When turned on it will display two icons, one for life and one for commander 1, a starting total for each, and a basic cursor to show selection.
