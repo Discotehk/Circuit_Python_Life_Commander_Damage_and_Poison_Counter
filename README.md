@@ -3,7 +3,7 @@ All of these files go in your CIRCUITPY drive root
 1. Add the required libraries to the lib foler. See below for list
 2. Create a folder named "Sprite Sheets"
 3. Add up to 3 .bmp files to that folder. Use Sprite1.bmp as example/template
-4. Create a .txt file named "Sprite Selection.txt"
+4. Add "Sprite Selection.txt"
 5. Add code.py and boot.py
 6. After adding boot.py you will need to hold the A button when connecting USB to edit the files with your PC
 
